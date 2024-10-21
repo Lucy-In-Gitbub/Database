@@ -4,7 +4,7 @@ import "fmt"
 
 type Node[T any] struct {
 	Value T
-	blow  *Node[T]
+	Blow  *Node[T]
 }
 
 type Stack[T any] struct {
@@ -61,7 +61,7 @@ func (s *Stack[T]) Pop() T {
 	}
 
 	value := s.Top.Value
-	s.Top = s.Top.blow
+	s.Top = s.Top.Blow
 
 	s.size--
 	return value

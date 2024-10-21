@@ -71,9 +71,7 @@ func (bst *Bst[v]) Delete(Val v) {
 			pointer = pointer.Left
 		case 0:
 			//r,l is empty
-			fmt.Println(pointer.Val, parent.Val)
 			if IsEmpty(pointer.Left) && IsEmpty(pointer.Right) {
-				fmt.Println("case 0")
 				switch cmp.Compare(parent.Val, pointer.Val) {
 				case -1:
 					fallthrough
@@ -112,7 +110,6 @@ func (bst *Bst[v]) Delete(Val v) {
 			}
 
 			//r,l is not empty
-			fmt.Println("case 3")
 			r := pointer.Right
 			var pr *Bstnode[v] = nil
 			for !IsEmpty(r) {
@@ -169,8 +166,7 @@ func handPanic() {
 }
 
 func (bst *Bst[v]) Traversal() []v {
-	if bst.root == nil {
-		fmt.Println(!IsEmpty(bst.root))
+	if IsEmpty(bst.root) {
 		return []v{}
 	}
 
@@ -187,6 +183,58 @@ func (bst *Bst[v]) Traversal() []v {
 			pointer = cur.Right
 			res = append(res, cur.Val)
 		}
+	}
+
+	return res
+}
+
+func (bst *Bst[v]) Dfs() []v {
+	if IsEmpty(bst.root) {
+		return []v{}
+	}
+
+	stack := stack.Create[*Bstnode[v]]()
+	res := []v{}
+
+	pointer := bst.root
+	for stack.Size() > 0 || !IsEmpty(pointer) {
+		if !IsEmpty(pointer) {
+			res = append(res, pointer.Val)
+			stack.Push(pointer)
+			pointer = pointer.Left
+		} else {
+			cur := stack.Pop()
+			pointer = cur.Right
+		}
+	}
+
+	return res
+}
+
+func (bst *Bst[v]) Bfs() []v {
+	if IsEmpty(bst.root) {
+		return []v{}
+	}
+
+	s1 := stack.Create[*Bstnode[v]]()
+	s2 := stack.Create[*Bstnode[v]]()
+	res := []v{}
+
+	pointer := bst.root
+	for !IsEmpty(pointer) || s1.Size() > 0 {
+		if !IsEmpty(pointer) {
+			s1.Push(pointer)
+			s2.Push(pointer)
+			pointer = pointer.Right
+		} else {
+			pointer = s1.Pop()
+			pointer = pointer.Left
+		}
+	}
+
+	for s2.Size() > 0 {
+		pointer = s2.Pop()
+		res = append(res, pointer.Val)
 	}
 
 	return res
